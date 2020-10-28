@@ -10,14 +10,14 @@ from torch import nn
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 
 #%%
-dftrain_raw = pd.read_csv('D:\\Projects\\eat_pytorch_in_20_days\\data\\titanic\\train.csv')
-dftest_raw = pd.read_csv('D:\\Projects\\eat_pytorch_in_20_days\\data\\titanic\\test.csv')
+dftrain_raw = pd.read_csv('./data/train.csv')
+dftest_raw = pd.read_csv('./data/test.csv')
 # print(dftrain_raw.head(10))
 
 #%%
 def preprocessing(dfdata):
     '''数据预处理'''
-    dfresult= pd.DataFrame()
+    dfresult = pd.DataFrame()
 
     #Pclass
     dfPclass = pd.get_dummies(dfdata['Pclass'])
