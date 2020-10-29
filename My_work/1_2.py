@@ -6,6 +6,7 @@ import os
 import datetime
 from abc import ABC
 
+# 设置环境变量
 os.environ["KMP_DUPLCATE_LIB_OK"] = "TRUE"
 
 
@@ -16,6 +17,7 @@ def print_bar():
     """
     now_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     print("\n" + "=========="*8 + "%s" % now_time)
+
 
 # print_bar()
 
@@ -239,6 +241,7 @@ def plot_metric(dfhistory, metric):
 
 
 plot_metric(dfhistory, "loss")
+plot_metric(dfhistory, "auc")
 
 #%% 使用模型
 
@@ -259,9 +262,9 @@ def predict(model, dl):
 # y_pre_probs = predict(model, dl_valid)
 
 #%% 保存模型参数
-torch.save(model.state_dict(), "./model/model_parameter.pth")
+torch.save(model.state_dict(), "./model/model_parameter1_2.pth")
 
 #%% 使用保存模型参数
 net_clone = Net()
-net_clone.load_state_dict(torch.load("./model/model_parameter.pth"))
+net_clone.load_state_dict(torch.load("./model/model_parameter1_2.pth"))
 predict(net_clone, dl_valid)

@@ -145,4 +145,46 @@ model.compile(loss_func=nn.BCELoss(), optimizer=torch.optim.Adagrad(model.parame
               metrics_dict={"accuracy": accuracy})
 
 #%%
-dfhistory = model.fit(20, dl_train, dl_test)
+dfhistory = model.fit(20, dl_train, dl_test, log_step_freq=200)
+
+#%% 评估模型
+import matplotlib.pyplot as plt
+
+
+def plot_metric(dfhistory, metric):
+    """
+
+    :param dfhistory:
+    :param metric:
+    :return:
+    """
+    train_metrics = dfhistory[metric]
+    val_metrics = dfhistory['val_' + metric]
+    epochs = range(1, len(train_metrics)+1)
+    plt.plot(epochs, train_metrics, 'bo--')
+    plt.plot(epochs, val_metrics, 'ro-')
+    plt.title("Training and validation" + metric)
+    plt.xlabel("Epochs")
+    plt.ylabel(metric)
+    plt.legend(['train_'+metric, 'val_'+metric])
+    plt.show()
+
+
+plot_metric(dfhistory, 'loss')
+plot_metric(dfhistory, 'accuracy')
+
+#%% 评估
+model.evaluate(dl_test)
+
+#%% 使用模型
+model.predict(dl_test)
+
+#%% 保存模型参数
+torch.save(model.state_dict(), "./model/model_parameter1_3.pth")
+
+#%% 加载并使用模型
+model_clone = Net()
+model_clone.load_state_dict(torch.load("./model/model_parameter1_3.pth"))
+model_clone.compile(loss_func=nn.BCELoss(), optimizer=torch.optim.Adagrad(model.parameters(), lr=0.02),
+                    metrics_dict={"accuracy": accuracy})
+model_clone.evaluate(dl_test)

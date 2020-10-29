@@ -10,8 +10,8 @@ from torch import nn
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 
 #%%
-dftrain_raw = pd.read_csv('./data/train.csv')
-dftest_raw = pd.read_csv('./data/test.csv')
+dftrain_raw = pd.read_csv('./data/titanic/train.csv')
+dftest_raw = pd.read_csv('./data/titanic/test.csv')
 # print(dftrain_raw.head(10))
 
 #%%
@@ -81,11 +81,13 @@ net = create_net()
 print(net)
 
 
-#%%
-# from torchkeras import summary
-# summary(net, input_shape=(15,))
-from torchsummary import summary
-summary(net, input_size=(15,))
+#%% 两种方法summary数据
+# 1
+from torchkeras import summary
+summary(net, input_shape=(15,))
+# 2
+# from torchsummary import summary
+# summary(net, input_size=(15,))
 
 
 #%% 训练模型
@@ -158,7 +160,12 @@ print("Finished Training.")
 import matplotlib.pyplot as plt
 
 def plot_metric(dfhistory, metric):
-    ''' '''
+    """
+
+    :param dfhistory:
+    :param metric:
+    :return:
+    """
     train_metrics = dfhistory[metric]
     val_metrics = dfhistory['val_' + metric]
     epochs = range(1, len(train_metrics)+1)
@@ -179,13 +186,15 @@ y_pred_probs = net(torch.tensor(x_test[0:10]).float()).data
 y_pred = torch.where(y_pred_probs > 0.5, torch.ones_like(y_pred_probs), \
                      torch.zeros_like(y_pred_probs))
 
-#%% 保存模型参数
-torch.save(net.state_dict(), "./data/net_parameter.pkl")
+#%% 保存模型参数, .pth和.pkl是通用的序列保存数据
+torch.save(net.state_dict(), "./model/model_parameter1_1.pth")
+
+#%%
 net_clone = create_net()
-net_clone.load_state_dict(torch.load("./data/net_parameter.pkl"))
+net_clone.load_state_dict(torch.load("./model/model_parameter1_1.pth"))
 net_clone.forward(torch.tensor(x_test[0:10]).float()).data
 
-#%% 保存完整模型
+#%% 保存完整模型, 一般不采用
 torch.save(net, "./data/net_parameter.pkl")
 net.loaded = torch.load("./data/net_parameter.pkl")
 net.loaded(torch.tensor(x_test[0:10]).float()).data
